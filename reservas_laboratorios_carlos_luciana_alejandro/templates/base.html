@@ -1,0 +1,43 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Seguimiento de proyectos{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <nav class="navbar" aria-label="Navegacion principal">
+            <a class="brand" href="{% url 'gestion_proyectos:dashboard' %}">Seguimiento de proyectos</a>
+
+            <div class="nav-actions">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'gestion_proyectos:estudiante_panel' %}">Estudiante</a>
+                    <a href="{% url 'gestion_proyectos:docente_panel' %}">Docente</a>
+                    <span class="user-label">{{ user.get_username }}</span>
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button class="link-button" type="submit">Cerrar sesion</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}">Iniciar sesion</a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+
+    <main class="page-shell">
+        {% if messages %}
+            <section class="messages" aria-label="Mensajes del sistema">
+                {% for message in messages %}
+                    <div class="message message-{{ message.tags|default:'info' }}">{{ message }}</div>
+                {% endfor %}
+            </section>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

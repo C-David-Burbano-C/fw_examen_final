@@ -1,0 +1,11 @@
+from django.apps import AppConfig
+
+
+class GestionProyectosConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'gestion_proyectos'
+
+    def ready(self):
+        from .signals import create_default_groups
+
+        create_default_groups(self)
