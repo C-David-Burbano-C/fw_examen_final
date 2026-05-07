@@ -1,0 +1,10 @@
+{% extends 'gestion/base.html' %}
+{% block content %}
+<h2>{% if object %}Editar{% else %}Nuevo{% endif %} Proyecto</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Guardar</button>
+</form>
+<a href="{% url 'proyecto_list' %}">Volver</a>
+{% endblock %}

@@ -1,0 +1,148 @@
+{% extends 'gestion/base.html' %}
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h2>Listado de Proyectos</h2>
+    </div>
+    <div class="col-md-4 text-end">
+        {% if not es_docente %}
+        <a href="{% url 'proyecto_create' %}" class="btn btn-primary">+ Nuevo Proyecto</a>
+        {% endif %}
+        <a href="?{{ request.GET.urlencode }}&export=csv" class="btn btn-success">📥 Exportar CSV</a>
+    </div>
+</div>
+
+<!-- Filtros -->
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">Filtros</h5>
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <label for="estado" class="form-label">Estado</label>
+                <select id="estado" name="estado" class="form-select">
+                    <option value="">-- Todos --</option>
+                    <option value="Pendiente" {% if estado_filtro == 'Pendiente' %}selected{% endif %}>Pendiente</option>
+                    <option value="Aprobado" {% if estado_filtro == 'Aprobado' %}selected{% endif %}>Aprobado</option>
+                    <option value="Rechazado" {% if estado_filtro == 'Rechazado' %}selected{% endif %}>Rechazado</option>
+                </select>
+            </div>
+            {% if es_docente %}
+            <div class="col-md-4">
+                <label for="estudiante" class="form-label">Estudiante</label>
+                <select id="estudiante" name="estudiante" class="form-select">
+                    <option value="">-- Todos --</option>
+                    {% for est in estudiantes %}
+                    <option value="{{ est }}" {% if est == estudiante_filtro %}selected{% endif %}>{{ est }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endif %}
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-outline-primary w-100">Filtrar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Gráfico de Estadísticas -->
+{% if stats %}
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">Distribución de Proyectos por Estado</h5>
+        <div style="max-width: 400px; margin: 0 auto;">
+            <canvas id="estadoChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+    const ctx = document.getElementById('estadoChart').getContext('2d');
+    const estadoChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: [{% for stat in stats %}'{{ stat.estado }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+            datasets: [{
+                label: 'Cantidad de Proyectos',
+                data: [{% for stat in stats %}{{ stat.count }}{% if not forloop.last %},{% endif %}{% endfor %}],
+                backgroundColor: [
+                    'rgba(255, 193, 7, 0.7)',
+                    'rgba(76, 175, 80, 0.7)',
+                    'rgba(244, 67, 54, 0.7)'
+                ],
+                borderColor: [
+                    'rgba(255, 193, 7, 1)',
+                    'rgba(76, 175, 80, 1)',
+                    'rgba(244, 67, 54, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+</script>
+{% endif %}
+
+<!-- Tabla de Proyectos -->
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Título</th>
+                <th>Estudiante</th>
+                <th>Docente</th>
+                <th>Estado</th>
+                <th>Calificación</th>
+                <th>Comentarios</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for proyecto in proyectos %}
+            <tr>
+                <td><strong>{{ proyecto.titulo }}</strong></td>
+                <td>{{ proyecto.estudiante.username }}</td>
+                <td>{{ proyecto.docente.username|default:"Sin asignar" }}</td>
+                <td>
+                    <span class="badge bg-{% if proyecto.estado == 'Pendiente' %}warning{% elif proyecto.estado == 'Aprobado' %}success{% else %}danger{% endif %}">
+                        {{ proyecto.estado }}
+                    </span>
+                </td>
+                <td>{{ proyecto.calificacion|default:"Sin calificar" }}</td>
+                <td>
+                    <small class="text-muted">{{ proyecto.comentarios.count }} comentario(s)</small>
+                </td>
+                <td>
+                    <a href="{% url 'proyecto_update' proyecto.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                    <a href="{% url 'proyecto_delete' proyecto.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                    <a href="{% url 'proyecto_comentar' proyecto.pk %}" class="btn btn-sm btn-info">💬 Comentar</a>
+                </td>
+            </tr>
+            <tr class="table-light">
+                <td colspan="7">
+                    <small><strong>Descripción:</strong> {{ proyecto.descripcion|truncatewords:20 }}</small>
+                    {% if proyecto.comentarios.all %}
+                    <div class="mt-2">
+                        <strong>Comentarios recientes:</strong>
+                        <ul class="small mb-0">
+                            {% for comentario in proyecto.comentarios.all|slice:":3" %}
+                            <li><strong>{{ comentario.autor.username }}</strong> ({{ comentario.fecha_creacion|date:"d/m/Y H:i" }}): {{ comentario.texto|truncatewords:15 }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="text-center text-muted">No hay proyectos.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

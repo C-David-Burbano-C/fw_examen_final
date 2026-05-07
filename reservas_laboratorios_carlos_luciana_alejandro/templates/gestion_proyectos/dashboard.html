@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Panel principal{% endblock %}
+
+{% block content %}
+<section class="content-header">
+    <p class="eyebrow">Panel principal</p>
+    <h1>Seguimiento de proyectos academicos</h1>
+    <p class="muted">Resumen general de los proyectos disponibles para tu usuario.</p>
+</section>
+
+<section class="stats-grid">
+    <article class="card">
+        <span class="stat-label">Total</span>
+        <strong class="stat-value">{{ total_proyectos }}</strong>
+    </article>
+    <article class="card">
+        <span class="stat-label">Enviados</span>
+        <strong class="stat-value">{{ proyectos_enviados }}</strong>
+    </article>
+    <article class="card">
+        <span class="stat-label">En revision</span>
+        <strong class="stat-value">{{ proyectos_revision }}</strong>
+    </article>
+    <article class="card">
+        <span class="stat-label">Aprobados</span>
+        <strong class="stat-value">{{ proyectos_aprobados }}</strong>
+    </article>
+</section>
+
+<section class="actions-row">
+    <a class="primary-link" href="{% url 'gestion_proyectos:proyecto_list' %}">Ver proyectos</a>
+</section>
+{% endblock %}

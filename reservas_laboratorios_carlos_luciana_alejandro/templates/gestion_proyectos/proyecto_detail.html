@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Detalle del proyecto{% endblock %}
+
+{% block content %}
+<section class="content-header split-header">
+    <div>
+        <p class="eyebrow">Proyecto</p>
+        <h1>{{ proyecto.titulo }}</h1>
+        <p class="muted">{{ proyecto.estudiante.get_username }} - {{ proyecto.fecha_envio|date:"d/m/Y H:i" }}</p>
+    </div>
+    <a class="secondary-link" href="{% url 'gestion_proyectos:proyecto_list' %}">Volver</a>
+</section>
+
+<section class="detail-grid">
+    <article class="card">
+        <h2>Informacion</h2>
+        <p>{{ proyecto.descripcion }}</p>
+        <dl class="detail-list">
+            <dt>Estado</dt>
+            <dd><span class="status status-{{ proyecto.estado }}">{{ proyecto.get_estado_display }}</span></dd>
+            <dt>Fecha revision</dt>
+            <dd>{{ proyecto.fecha_revision|date:"d/m/Y H:i"|default:"Sin revision" }}</dd>
+            <dt>Calificacion</dt>
+            <dd>{{ proyecto.calificacion|default:"Sin calificar" }}</dd>
+            <dt>Documento</dt>
+            <dd><a class="text-link" href="{{ proyecto.documento.url }}" target="_blank" rel="noopener">Abrir documento</a></dd>
+        </dl>
+    </article>
+
+    <article class="card">
+        <h2>Comentarios</h2>
+        <div class="comment-list">
+            {% for comentario in proyecto.comentarios.all %}
+                <div class="comment-item">
+                    <strong>{{ comentario.usuario.get_username }}</strong>
+                    <span>{{ comentario.fecha|date:"d/m/Y H:i" }}</span>
+                    <p>{{ comentario.texto }}</p>
+                </div>
+            {% empty %}
+                <p class="muted">No hay comentarios.</p>
+            {% endfor %}
+        </div>
+
+        {% if puede_comentar %}
+            <form method="post" action="{% url 'gestion_proyectos:comentario_create' proyecto.pk %}" class="form-card">
+                {% csrf_token %}
+                {{ comentario_form|crispy }}
+                <button class="primary-button" type="submit">Enviar comentario</button>
+            </form>
+        {% else %}
+            <div class="message">El proyecto esta aprobado. No se permiten nuevos comentarios.</div>
+        {% endif %}
+    </article>
+</section>
+{% endblock %}

@@ -1,5 +1,5 @@
 """
-WSGI config for reservas_laboratorios_carlos_luciana_alejandro project.
+WSGI config for seguimiento_proyectos_carlos_luciana_alejandro project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'reservas_laboratorios_carlos_luciana_alejandro.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'seguimiento_proyectos_carlos_luciana_alejandro.settings')
 
 application = get_wsgi_application()
