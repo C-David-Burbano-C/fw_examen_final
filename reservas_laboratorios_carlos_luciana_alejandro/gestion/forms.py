@@ -1,5 +1,5 @@
 from django import forms
-from .models import Reserva, Proyecto
+from .models import Reserva, Proyecto, Comentario
 
 class ReservaForm(forms.ModelForm):
     class Meta:
@@ -10,6 +10,17 @@ class ReservaForm(forms.ModelForm):
             'hora_inicio': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
             'hora_fin': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
             'laboratorio': forms.TextInput(attrs={'class': 'form-control'})
+        }
+
+class ComentarioForm(forms.ModelForm):
+    class Meta:
+        model = Comentario
+        fields = ['texto']
+        widgets = {
+            'texto': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Escriba su comentario...'}),
+        }
+        labels = {
+            'texto': 'Comentario',
         }
 
 class ProyectoEstudianteForm(forms.ModelForm):

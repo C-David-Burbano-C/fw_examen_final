@@ -1,7 +1,8 @@
 from django.urls import path
 from .views import (
     ReservaListView, ReservaCreateView, ReservaUpdateView, ReservaDeleteView,
-    ProyectoListView, ProyectoCreateView, ProyectoUpdateView, ProyectoDeleteView
+    ProyectoListView, ProyectoCreateView, ProyectoUpdateView, ProyectoDeleteView,
+    ComentarioCreateView
 )
 
 urlpatterns = [
@@ -14,4 +15,5 @@ urlpatterns = [
     path('proyectos/nuevo/', ProyectoCreateView.as_view(), name='proyecto_create'),
     path('proyectos/<int:pk>/editar/', ProyectoUpdateView.as_view(), name='proyecto_update'),
     path('proyectos/<int:pk>/eliminar/', ProyectoDeleteView.as_view(), name='proyecto_delete'),
+    path('proyectos/<int:pk>/comentar/', ComentarioCreateView.as_view(), name='proyecto_comentar'),
 ]

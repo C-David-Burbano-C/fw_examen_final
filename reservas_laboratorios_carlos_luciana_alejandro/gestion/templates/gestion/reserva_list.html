@@ -1,16 +1,112 @@
 {% extends 'gestion/base.html' %}
 {% block content %}
-<h2>Listado de Reservas</h2>
-<a href="{% url 'reserva_create' %}">Nueva Reserva</a>
-<ul>
-    {% for reserva in reservas %}
-    <li>
-        {{ reserva }} 
-        {% if reserva.usuario == request.user %}
-        - <a href="{% url 'reserva_update' reserva.pk %}">Editar</a>
-        - <a href="{% url 'reserva_delete' reserva.pk %}">Eliminar</a>
-        {% endif %}
-    </li>
-    {% endfor %}
-</ul>
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h2>Listado de Reservas</h2>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'reserva_create' %}" class="btn btn-primary">+ Nueva Reserva</a>
+        <a href="?{{ request.GET.urlencode }}&export=csv" class="btn btn-success">📥 Exportar CSV</a>
+    </div>
+</div>
+
+<!-- Filtros -->
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">Filtros</h5>
+        <form method="get" class="row g-3">
+            <div class="col-md-5">
+                <label for="fecha" class="form-label">Fecha</label>
+                <input type="date" id="fecha" name="fecha" class="form-control" value="{{ fecha_filtro }}">
+            </div>
+            <div class="col-md-5">
+                <label for="laboratorio" class="form-label">Laboratorio</label>
+                <select id="laboratorio" name="laboratorio" class="form-select">
+                    <option value="">-- Todos --</option>
+                    {% for lab in laboratorios %}
+                    <option value="{{ lab }}" {% if lab == laboratorio_filtro %}selected{% endif %}>{{ lab }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-outline-primary w-100">Filtrar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Gráfico de Estadísticas -->
+{% if stats %}
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">Estadísticas de Uso por Laboratorio</h5>
+        <canvas id="labChart"></canvas>
+    </div>
+</div>
+
+<script>
+    const ctx = document.getElementById('labChart').getContext('2d');
+    const labChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [{% for stat in stats %}'{{ stat.laboratorio }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+            datasets: [{
+                label: 'Número de Reservas',
+                data: [{% for stat in stats %}{{ stat.count }}{% if not forloop.last %},{% endif %}{% endfor %}],
+                backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: true }
+            },
+            scales: {
+                y: { beginAtZero: true, max: {{ stats|length|add:5 }} }
+            }
+        }
+    });
+</script>
+{% endif %}
+
+<!-- Tabla de Reservas -->
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Laboratorio</th>
+                <th>Fecha</th>
+                <th>Hora Inicio</th>
+                <th>Hora Fin</th>
+                <th>Usuario</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reserva in reservas %}
+            <tr>
+                <td>{{ reserva.laboratorio }}</td>
+                <td>{{ reserva.fecha }}</td>
+                <td>{{ reserva.hora_inicio }}</td>
+                <td>{{ reserva.hora_fin }}</td>
+                <td>{{ reserva.usuario.username }}</td>
+                <td>
+                    {% if reserva.usuario == request.user %}
+                    <a href="{% url 'reserva_update' reserva.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                    <a href="{% url 'reserva_delete' reserva.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                    {% else %}
+                    <span class="text-muted">No disponible</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center text-muted">No hay reservas.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}

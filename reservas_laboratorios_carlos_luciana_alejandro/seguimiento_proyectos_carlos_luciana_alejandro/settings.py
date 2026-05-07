@@ -17,6 +17,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'gestion.apps.GestionConfig',
     'gestion_proyectos.apps.GestionProyectosConfig',
 ]
 
@@ -88,3 +89,6 @@ LOGIN_REDIRECT_URL = 'gestion_proyectos:dashboard'
 LOGOUT_REDIRECT_URL = 'login'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Email Configuration for testing
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
