@@ -5,21 +5,30 @@
 {% block content %}
 <section class="content-header">
     <p class="eyebrow">Panel principal</p>
-    <h1>Gestion de seguimiento de proyectos</h1>
-    <p class="muted">Base de autenticacion, roles y navegacion lista para integrar los modulos del equipo.</p>
+    <h1>Seguimiento de proyectos academicos</h1>
+    <p class="muted">Resumen general de los proyectos disponibles para tu usuario.</p>
 </section>
 
-<section class="grid-two">
+<section class="stats-grid">
     <article class="card">
-        <h2>Rol Estudiante</h2>
-        <p>Acceso preparado para las vistas y acciones propias de estudiantes.</p>
-        <a class="text-link" href="{% url 'gestion_proyectos:estudiante_panel' %}">Abrir panel</a>
+        <span class="stat-label">Total</span>
+        <strong class="stat-value">{{ total_proyectos }}</strong>
     </article>
+    <article class="card">
+        <span class="stat-label">Enviados</span>
+        <strong class="stat-value">{{ proyectos_enviados }}</strong>
+    </article>
+    <article class="card">
+        <span class="stat-label">En revision</span>
+        <strong class="stat-value">{{ proyectos_revision }}</strong>
+    </article>
+    <article class="card">
+        <span class="stat-label">Aprobados</span>
+        <strong class="stat-value">{{ proyectos_aprobados }}</strong>
+    </article>
+</section>
 
-    <article class="card">
-        <h2>Rol Docente</h2>
-        <p>Acceso preparado para las vistas y acciones propias de docentes.</p>
-        <a class="text-link" href="{% url 'gestion_proyectos:docente_panel' %}">Abrir panel</a>
-    </article>
+<section class="actions-row">
+    <a class="primary-link" href="{% url 'gestion_proyectos:proyecto_list' %}">Ver proyectos</a>
 </section>
 {% endblock %}

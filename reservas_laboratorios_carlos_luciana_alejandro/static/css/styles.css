@@ -136,8 +136,32 @@ a {
     gap: 18px;
 }
 
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.stat-label {
+    color: var(--muted);
+    display: block;
+    font-size: 0.86rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.stat-value {
+    display: block;
+    font-size: 2rem;
+    line-height: 1;
+}
+
 .card,
-.auth-panel {
+.auth-panel,
+.filter-panel,
+.form-panel,
+.table-panel {
     border: 1px solid var(--line);
     border-radius: var(--radius);
     background: var(--surface);
@@ -155,6 +179,206 @@ a {
 
 .card p {
     color: var(--muted);
+}
+
+.split-header {
+    align-items: flex-start;
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+}
+
+.actions-row {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.primary-link,
+.secondary-link {
+    border-radius: var(--radius);
+    display: inline-flex;
+    font-weight: 700;
+    justify-content: center;
+    padding: 10px 14px;
+    text-decoration: none;
+}
+
+.primary-link {
+    background: var(--primary);
+    color: #ffffff;
+}
+
+.secondary-link {
+    border: 1px solid var(--line);
+    color: var(--primary);
+}
+
+.filter-panel,
+.form-panel,
+.table-panel {
+    margin-bottom: 22px;
+    padding: 20px;
+}
+
+.filter-grid {
+    align-items: end;
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.filter-grid label {
+    color: var(--text);
+    display: grid;
+    font-weight: 700;
+    gap: 6px;
+}
+
+.filter-grid select,
+.form-panel input,
+.form-panel select,
+.form-panel textarea {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 10px 12px;
+    width: 100%;
+}
+
+.filter-actions {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.secondary-button,
+.danger-button {
+    border-radius: var(--radius);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 700;
+    padding: 10px 14px;
+}
+
+.secondary-button {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    color: var(--primary);
+}
+
+.danger-button {
+    background: var(--danger);
+    border: 1px solid var(--danger);
+    color: #ffffff;
+}
+
+.data-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.data-table th,
+.data-table td {
+    border-bottom: 1px solid var(--line);
+    padding: 13px 10px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.data-table th {
+    color: var(--muted);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+}
+
+.row-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.row-actions a {
+    color: var(--primary);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.empty-cell {
+    color: var(--muted);
+    text-align: center;
+}
+
+.status {
+    border-radius: 999px;
+    display: inline-flex;
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 4px 9px;
+}
+
+.status-enviado {
+    background: #eef4ff;
+    color: #1849a9;
+}
+
+.status-revision {
+    background: #fff7e6;
+    color: #9a5b00;
+}
+
+.status-aprobado {
+    background: #eaf8ee;
+    color: #17663a;
+}
+
+.detail-grid {
+    display: grid;
+    gap: 18px;
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 0.8fr);
+}
+
+.detail-list {
+    display: grid;
+    gap: 8px 16px;
+    grid-template-columns: 140px 1fr;
+}
+
+.detail-list dt {
+    color: var(--muted);
+    font-weight: 700;
+}
+
+.detail-list dd {
+    margin: 0;
+}
+
+.comment-list {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.comment-item {
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 12px;
+}
+
+.comment-item span {
+    color: var(--muted);
+    display: block;
+    font-size: 0.86rem;
+}
+
+.comment-item p {
+    color: var(--text);
+    margin: 6px 0 0;
+}
+
+.form-card {
+    display: grid;
+    gap: 10px;
 }
 
 .auth-layout {
@@ -204,6 +428,10 @@ a {
     margin-top: 8px;
 }
 
+.fit-button {
+    width: auto;
+}
+
 .primary-button:hover {
     background: var(--primary-dark);
 }
@@ -216,5 +444,15 @@ a {
 
     .grid-two {
         grid-template-columns: 1fr;
+    }
+
+    .stats-grid,
+    .filter-grid,
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .split-header {
+        flex-direction: column;
     }
 }
