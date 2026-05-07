@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión</title>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'reserva_list' %}">Reservas</a> |
+        <a href="{% url 'proyecto_list' %}">Proyectos</a>
+    </nav>
+    <hr>
+    {% block content %}
+    {% endblock %}
+</body>
+</html>

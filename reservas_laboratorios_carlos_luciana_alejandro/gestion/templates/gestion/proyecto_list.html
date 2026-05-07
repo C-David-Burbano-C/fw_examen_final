@@ -1,0 +1,14 @@
+{% extends 'gestion/base.html' %}
+{% block content %}
+<h2>Listado de Proyectos</h2>
+<a href="{% url 'proyecto_create' %}">Nuevo Proyecto</a>
+<ul>
+    {% for proyecto in proyectos %}
+    <li>
+        {{ proyecto.titulo }} - {{ proyecto.estado }} ({{ proyecto.calificacion|default:"Sin calificar" }})
+        - <a href="{% url 'proyecto_update' proyecto.pk %}">Editar</a>
+        - <a href="{% url 'proyecto_delete' proyecto.pk %}">Eliminar</a>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}
