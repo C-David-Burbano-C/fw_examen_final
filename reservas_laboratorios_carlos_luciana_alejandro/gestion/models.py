@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.core.mail import send_mail
 
 class Reserva(models.Model):
     laboratorio = models.CharField(max_length=100)
@@ -47,3 +50,33 @@ class Proyecto(models.Model):
 
     def __str__(self):
         return self.titulo
+
+class Comentario(models.Model):
+    proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE, related_name='comentarios')
+    autor = models.ForeignKey(User, on_delete=models.CASCADE)
+    texto = models.TextField()
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Comentario de {self.autor.username} en {self.proyecto.titulo}"
+
+@receiver(post_save, sender=Comentario)
+def notificar_nuevo_comentario(sender, instance, created, **kwargs):
+    if created:
+        proyecto = instance.proyecto
+        # Si el autor es el estudiante, notificar al docente (si tiene).
+        # Si el autor es el docente, notificar al estudiante.
+        destinatario = None
+        if instance.autor == proyecto.estudiante and proyecto.docente:
+            destinatario = proyecto.docente.email
+        elif instance.autor == proyecto.docente:
+            destinatario = proyecto.estudiante.email
+            
+        if destinatario:
+            send_mail(
+                subject=f"Nuevo comentario en el proyecto: {proyecto.titulo}",
+                message=f"El usuario {instance.autor.username} ha comentado:\n\n{instance.texto}",
+                from_email='noreply@ejemplo.com',
+                recipient_list=[destinatario],
+                fail_silently=True,
+            )
