@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}Proyectos{% endblock %}
+
+{% block content %}
+<section class="content-header split-header">
+    <div>
+        <p class="eyebrow">Proyectos</p>
+        <h1>Listado de proyectos</h1>
+        <p class="muted">Consulta proyectos, filtra resultados y exporta la informacion.</p>
+    </div>
+    {% if es_estudiante %}
+        <a class="primary-link" href="{% url 'gestion_proyectos:proyecto_create' %}">Nuevo proyecto</a>
+    {% endif %}
+</section>
+
+<section class="filter-panel">
+    <form method="get" class="filter-grid">
+        <label>
+            Estado
+            <select name="estado">
+                <option value="">Todos</option>
+                {% for value, label in estado_choices %}
+                    <option value="{{ value }}" {% if estado_filtro == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </label>
+
+        {% if es_docente %}
+            <label>
+                Estudiante
+                <select name="estudiante">
+                    <option value="">Todos</option>
+                    {% for estudiante in estudiantes %}
+                        <option value="{{ estudiante.id }}" {% if estudiante_filtro == estudiante.id|stringformat:'s' %}selected{% endif %}>
+                            {{ estudiante.get_username }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </label>
+        {% endif %}
+
+        <div class="filter-actions">
+            <button class="secondary-button" type="submit">Filtrar</button>
+            <a class="secondary-link" href="{% url 'gestion_proyectos:proyecto_list' %}">Limpiar</a>
+            <a class="secondary-link" href="?{{ request.GET.urlencode }}{% if request.GET %}&{% endif %}export=csv">Exportar CSV</a>
+        </div>
+    </form>
+</section>
+
+<section class="table-panel">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Titulo</th>
+                <th>Estudiante</th>
+                <th>Estado</th>
+                <th>Fecha envio</th>
+                <th>Calificacion</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for proyecto in proyectos %}
+                <tr>
+                    <td>{{ proyecto.titulo }}</td>
+                    <td>{{ proyecto.estudiante.get_username }}</td>
+                    <td><span class="status status-{{ proyecto.estado }}">{{ proyecto.get_estado_display }}</span></td>
+                    <td>{{ proyecto.fecha_envio|date:"d/m/Y H:i" }}</td>
+                    <td>{{ proyecto.calificacion|default:"Pendiente" }}</td>
+                    <td class="row-actions">
+                        <a href="{% url 'gestion_proyectos:proyecto_detail' proyecto.pk %}">Ver</a>
+                        {% if es_docente %}
+                            <a href="{% url 'gestion_proyectos:proyecto_revision' proyecto.pk %}">Revisar</a>
+                        {% else %}
+                            <a href="{% url 'gestion_proyectos:proyecto_update' proyecto.pk %}">Editar</a>
+                            <a href="{% url 'gestion_proyectos:proyecto_delete' proyecto.pk %}">Eliminar</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6" class="empty-cell">No hay proyectos para mostrar.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

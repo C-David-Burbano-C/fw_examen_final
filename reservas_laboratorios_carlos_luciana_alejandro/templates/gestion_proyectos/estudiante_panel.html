@@ -6,6 +6,11 @@
 <section class="content-header">
     <p class="eyebrow">Estudiante</p>
     <h1>Panel de estudiante</h1>
-    <p class="muted">Vista protegida para usuarios del grupo Estudiante.</p>
+    <p class="muted">Gestiona tus proyectos academicos y revisa comentarios del docente.</p>
+</section>
+
+<section class="actions-row">
+    <a class="primary-link" href="{% url 'gestion_proyectos:proyecto_create' %}">Crear proyecto</a>
+    <a class="secondary-link" href="{% url 'gestion_proyectos:proyecto_list' %}">Mis proyectos</a>
 </section>
 {% endblock %}

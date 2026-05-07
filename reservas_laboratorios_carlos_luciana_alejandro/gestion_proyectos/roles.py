@@ -13,6 +13,14 @@ def user_has_role(user, role_name):
     return user.is_superuser or user.groups.filter(name=role_name).exists()
 
 
+def is_estudiante(user):
+    return user_has_role(user, ROLE_ESTUDIANTE)
+
+
+def is_docente(user):
+    return user_has_role(user, ROLE_DOCENTE)
+
+
 class RoleRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
     """Protect class-based views by Django group."""
 
