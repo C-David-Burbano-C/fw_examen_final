@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Iniciar sesion{% endblock %}
+
+{% block content %}
+<section class="auth-layout">
+    <div class="auth-panel">
+        <h1>Iniciar sesion</h1>
+        <p class="muted">Accede con tu usuario institucional.</p>
+
+        {% if form.errors %}
+            <div class="message message-error">
+                Usuario o contrasena incorrectos.
+            </div>
+        {% endif %}
+
+        <form class="form-stack" method="post" novalidate>
+            {% csrf_token %}
+            <label for="{{ form.username.id_for_label }}">Usuario</label>
+            {{ form.username }}
+
+            <label for="{{ form.password.id_for_label }}">Contrasena</label>
+            {{ form.password }}
+
+            <button class="primary-button" type="submit">Entrar</button>
+        </form>
+    </div>
+</section>
+{% endblock %}
